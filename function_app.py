@@ -6,6 +6,7 @@ import os
 import json
 import unicodedata, re, itertools, sys
 import re
+import html
 
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
@@ -71,7 +72,7 @@ def computeChallengeResponse(challengeCode: str, clientSecret: str) -> str:
     return computeHMACDigest(challengeCode, clientSecret)
 
 def computeMessageDigest(req: func.HttpRequest, clientSecret: str) -> str:
-    message = req.get_body().decode('utf-8')
+    message = str(req.get_body(), 'utf-8')
     logging.info(f"JSON string: {message}")
     return computeHMACDigest(f"hmacsha256={removeSpecialUnicode(message)}", clientSecret)
 
