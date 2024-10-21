@@ -7,6 +7,7 @@ import json
 import unicodedata, re, itertools, sys
 import re
 import html
+import time
 
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
@@ -45,6 +46,9 @@ def webhook_validation(req: func.HttpRequest) -> func.HttpResponse:
     
 @app.route(route="webhook", methods=["POST"])
 def receive_event(req: func.HttpRequest) -> func.HttpResponse:
+    time.sleep(10)
+    return func.HttpResponse("OK", status_code=200)
+'''
     logRequest(req, "Event Posted")
     if 'x-li-signature' not in req.headers:
         return func.HttpResponse("No LI signature header", status_code=404)
@@ -58,6 +62,7 @@ def receive_event(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse("OK", status_code=200)
     else:
         return func.HttpResponse(f"Signature Mismatch, computed Signature: {computed_signature}, li signature: {li_signature}", status_code=400)
+'''
 
 def logRequest(req: func.HttpRequest, callType: str):
     requestLog = [f'Received HTTP call {callType}', f'Method: {req.method}', f'Url {req.url}']
