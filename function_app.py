@@ -46,7 +46,7 @@ def webhook_validation(req: func.HttpRequest) -> func.HttpResponse:
     
 @app.route(route="webhook", methods=["POST"])
 def receive_event(req: func.HttpRequest) -> func.HttpResponse:
-    time.sleep(10)
+    time.sleep(22)
     return func.HttpResponse("OK", status_code=200)
 '''
     logRequest(req, "Event Posted")
