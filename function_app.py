@@ -43,6 +43,32 @@ def webhook_validation(req: func.HttpRequest) -> func.HttpResponse:
     response_obj = {"challengeCode": challengeCode, "challengeResponse": challengeResponse, "clientSecret": client_secret[:4]}
     logging.info('Challenge Response Sent')
     return func.HttpResponse(json.dumps(response_obj), mimetype="application/json")
+
+@app.route(route="webhook/{id}/{client_secret}", methods=["GET"])
+def webhook_with_id(req: func.HttpRequest, id: str, client_secret: str) -> func.HttpResponse:
+    logRequest(req, f"Webhook With ID - {id}")
+    
+    challengeCode = req.params.get('challengeCode')
+    if not challengeCode:
+        try:
+            req_body = req.get_json()
+        except ValueError:
+            pass
+        else:
+            challengeCode = req_body.get('challengeCode')
+
+    if not challengeCode:
+        logging.info("No ChallengeCode was given")
+        return func.HttpResponse(
+            "This HTTP triggered function executed, But no challenge code was passed.", status_code=200
+        )
+
+    # Use the client_secret from the URL instead of env
+    challengeResponse = computeChallengeResponse(challengeCode, client_secret)
+    response_obj = {"challengeCode": challengeCode, "challengeResponse": challengeResponse}
+    logging.info('Challenge Response Sent')
+    return func.HttpResponse(json.dumps(response_obj), mimetype="application/json")
+
     
 @app.route(route="webhook", methods=["POST"])
 def receive_event(req: func.HttpRequest) -> func.HttpResponse:
