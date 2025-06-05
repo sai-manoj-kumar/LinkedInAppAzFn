@@ -72,23 +72,8 @@ def webhook_with_id(req: func.HttpRequest, id: str, client_secret: str) -> func.
     
 @app.route(route="webhook", methods=["POST"])
 def receive_event(req: func.HttpRequest) -> func.HttpResponse:
-    time.sleep(22)
+    time.sleep(2) # Simulate processing delay
     return func.HttpResponse("OK", status_code=200)
-'''
-    logRequest(req, "Event Posted")
-    if 'x-li-signature' not in req.headers:
-        return func.HttpResponse("No LI signature header", status_code=404)
-    li_signature = req.headers['x-li-signature']
-    if "clientSecret" not in os.environ:
-        return func.HttpResponse("No client Secret in Setting", status_code=500)
-    computed_signature = computeMessageDigest(req, os.environ["clientSecret"])
-    signature_matched = li_signature == computed_signature
-    logging.info(f"Signature Matched: {signature_matched}, li_signature: {li_signature}, computed_signature: {computed_signature}")
-    if signature_matched:
-        return func.HttpResponse("OK", status_code=200)
-    else:
-        return func.HttpResponse(f"Signature Mismatch, computed Signature: {computed_signature}, li signature: {li_signature}", status_code=400)
-'''
 
 def logRequest(req: func.HttpRequest, callType: str):
     requestLog = [f'Received HTTP call {callType}', f'Method: {req.method}', f'Url {req.url}']
